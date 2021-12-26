@@ -2,13 +2,13 @@
   "name": "issue-tracker-server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/app.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "npm run build && node dist/app.js",
+    "start": "npm run build && node dist/server.js",
     "start:dev": "nodemon",
     "build": "rimraf ./dist && tsc",
     "lint": "eslint . --ext .ts",
-    "test": "jest --coverage --detectOpenHandles",
+    "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
   "repository": {
