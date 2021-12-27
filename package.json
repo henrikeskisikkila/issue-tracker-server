@@ -8,7 +8,7 @@
     "start:dev": "nodemon",
     "build": "rimraf ./dist && tsc",
     "lint": "eslint . --ext .ts",
-    "test": "jest --coverage",
+    "test": "jest",
     "test:watch": "jest --watch"
   },
   "repository": {

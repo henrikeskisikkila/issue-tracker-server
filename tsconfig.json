@@ -6,7 +6,10 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "strict": true
+    "strict": false
   },
-  "lib": ["es2015"]
+  "lib": ["es2015"],
+  "exclude": [
+    "tests",
+  ]
 }
