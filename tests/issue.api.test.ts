@@ -61,6 +61,28 @@ describe('Testing REST API endpoints (Issue)', () => {
     expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
   });
 
+  test('update an issue', async () => {
+    const response = await request(app)
+      .post('/issue')
+      .send({ 'title': 'My Title', 'content': 'My Content' })
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toBe(StatusCodes.OK);
+    expect(response.body.id).toBeDefined();
+
+    const newTitle = 'Updated Title';
+    const newContent = 'Updated Content';
+
+    const updateResponse = await request(app)
+      .put('/issue/' + response.body.id)
+      .send({ 'title': newTitle, 'content': newContent })
+
+    expect(updateResponse.statusCode).toBe(StatusCodes.OK);
+    expect(updateResponse.body._id).toBe(response.body.id);
+    expect(updateResponse.body.title).toBe(newTitle);
+    expect(updateResponse.body.content).toBe(newContent);
+  });
+
   test('delete an issue by using its identifier', async () => {
     const postResponse = await request(app)
       .post('/issue')

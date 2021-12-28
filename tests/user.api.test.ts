@@ -2,85 +2,115 @@ import request from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import app from '../src/app';
-import Issue from '../src/models/issue';
+import User from '../src/models/user';
 
 const keys = require('../src/config/keys');
 mongoose.connect(keys.mongoURI);
 
 describe('Testing REST API endpoints (User)', () => {
 
-  beforeAll(async () => {
-    await Issue.deleteMany({});
+  beforeEach(async () => {
+    await User.deleteMany({});
   });
 
   afterAll(async () => {
+    await User.deleteMany({});
     await mongoose.connection.close();
   });
 
-  test.only('get all users', async () => {
+  test('create a new user', async () => {
     const response = await request(app)
-      .get('/user')
+      .post('/user')
       .set('Accept', 'application/json')
-    // .expect('Content-Type', /json/)
+      .send({
+        'username': 'User',
+        'email': 'first.last@domain.com',
+        'password': 'verysecret'
+      });
 
     expect(response.statusCode).toBe(StatusCodes.OK);
+    expect(response.body.email).toBe('first.last@domain.com');
   });
 
-  // test('get an issue by using its identifier', async () => {
-  //   const postResponse = await request(app)
-  //     .post('/issue')
-  //     .send({ 'title': 'Title', 'content': 'Content' })
-  //     .set('Accept', 'application/json')
+  test('get user by email', async () => {
+    const response = await request(app)
+      .post('/user')
+      .set('Accept', 'application/json')
+      .send({
+        'username': 'User',
+        'email': 'first.last@domain.com',
+        'password': 'verysecret'
+      });
 
-  //   expect(postResponse.statusCode).toBe(StatusCodes.OK);
-  //   expect(postResponse.body.id).toBeDefined();
+    expect(response.statusCode).toBe(StatusCodes.OK);
 
-  //   const getResponse = await request(app)
-  //     .get('/issue/' + postResponse.body.id)
-  //     .set('Accept', 'application/json');
+    const getResponse = await request(app)
+      .get('/user/first.last@domain.com')
+      .set('Accept', 'application/json')
 
-  //   expect(getResponse.statusCode).toBe(StatusCodes.OK);
-  //   expect(getResponse.body._id).toEqual(postResponse.body.id);
-  // });
+    expect(getResponse.statusCode).toBe(StatusCodes.OK);
+    expect(getResponse.body.user.email).toBe('first.last@domain.com');
+  });
 
-  // test('post an new issue', async () => {
-  //   const response = await request(app)
-  //     .post('/issue')
-  //     .send({ 'title': 'My Title', 'content': 'My Content' })
-  //     .set('Accept', 'application/json');
+  test('create a new user with invalid email', async () => {
+    const response = await request(app)
+      .post('/user')
+      .send({
+        'username': 'User',
+        'email': 'first.lastdomain.com',
+        'password': 'verysecret'
+      });
 
-  //   expect(response.statusCode).toBe(StatusCodes.OK);
-  //   expect(response.body.id).toBeDefined();
-  // });
+    expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+  });
 
-  // test('post an new issue with invalid data', async () => {
-  //   const response = await request(app)
-  //     .post('/issue')
-  //     .send({})
-  //     .set('Accept', 'application/json');
+  test('create a new user with invalid password', async () => {
+    const response = await request(app)
+      .post('/user')
+      .send({
+        'username': 'User',
+        'email': 'first.last@domain.com',
+        'password': 'very'
+      });
 
-  //   expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
-  // });
+    expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+  });
 
-  // test('delete an issue by using its identifier', async () => {
-  //   const postResponse = await request(app)
-  //     .post('/issue')
-  //     .send({ 'title': 'My Title', 'content': 'My Content' })
-  //     .set('Accept', 'application/json');
+  test('create a new user with invalid username', async () => {
+    const response = await request(app)
+      .post('/user')
+      .send({
+        'username': '',
+        'email': 'first.last@domain.com',
+        'password': 'very'
+      });
 
-  //   expect(postResponse.statusCode).toBe(StatusCodes.OK);
-  //   expect(postResponse.body.id).toBeDefined();
+    expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+  });
 
-  //   const deleteResponse = await request(app)
-  //     .delete('/issue/' + postResponse.body.id)
+  test('delete an user by using an email', async () => {
+    const response = await request(app)
+      .post('/user')
+      .set('Accept', 'application/json')
+      .send({
+        'username': 'User',
+        'email': 'first@domain.com',
+        'password': 'verysecret'
+      });
 
-  //   expect(deleteResponse.statusCode).toBe(StatusCodes.OK);
-  // });
+    expect(response.statusCode).toBe(StatusCodes.OK);
+    expect(response.body.email).toBeDefined();
 
-  // test('trying to delete an issue without identifier', async () => {
-  //   const response = await request(app)
-  //     .delete('/issue/')
+    const deleteResponse = await request(app)
+      .delete('/user/' + response.body.email)
 
-  //   expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
-  // });
+    expect(deleteResponse.statusCode).toBe(StatusCodes.OK);
+
+    const getResponse = await request(app)
+      .get('/user/first@domain.com')
+      .set('Accept', 'application/json')
+
+    expect(getResponse.statusCode).toBe(StatusCodes.OK);
+    expect(getResponse.body.user).toBe(null);
+  });
 });

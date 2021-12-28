@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction as Next } from 'express';
 import StatusCodes from 'http-status-codes';
+import { ObjectId } from 'mongodb';
 import Issue from '../models/issue';
-import mongoose, { Error } from 'mongoose';
 
 const router = express.Router();
 
@@ -10,41 +10,32 @@ router.get('/', async (req: Request, res: Response) => {
   res.send(issues);
 });
 
-router.get('/:id', async (req: Request, res: Response, next) => {
-  try {
-    const issue: any = await Issue.findOne({ _id: req.params.id });
-    res.send(issue);
-  } catch (err) {
-    next(err);
-  }
+router.get('/:id', async (req: Request, res: Response) => {
+  const issue: any = await Issue.findOne({ _id: req.params.id });
+  res.send(issue);
 });
 
-router.post('/', async (req: any, res: Response, next) => {
-  try {
-    const issue = new Issue(req.body);
-    const result = await issue.save();
-    res.send({ id: result._id.toString() });
-  } catch (err) {
-    if (err instanceof Error.ValidationError) {
-      res.sendStatus(StatusCodes.BAD_REQUEST);
-    } else {
-      next(err);
-    }
-  }
+router.post('/', async (req: Request, res: Response) => {
+  const issue = new Issue(req.body);
+  const result = await issue.save();
+  res.send({ id: result._id.toString() });
 });
 
-router.delete('/:id', async (req: any, res: Response, next) => {
-  try {
-    await Issue.deleteOne({ _id: req.params.id });
-    res.sendStatus(StatusCodes.OK);
-  } catch (err) {
-    next(err)
-  }
+router.put('/:id', async (req: Request, res: Response) => {
+  const issue = await Issue.findOne({ _id: req.params.id });
+  issue.title = req.body.title;
+  issue.content = req.body.content;
+  const savedIssue = await issue.save();
+  res.send(savedIssue);
 });
 
-router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err);
-  res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+router.delete('/:id', async (req: any, res: Response) => {
+  await Issue.deleteOne({ _id: req.params.id });
+  res.sendStatus(StatusCodes.OK);
+});
+
+router.use((err: Error, req: Request, res: Response, next: Next) => {
+  res.sendStatus(StatusCodes.BAD_REQUEST);
 });
 
 export default router;
