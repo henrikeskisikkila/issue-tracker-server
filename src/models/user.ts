@@ -34,9 +34,10 @@ const userSchema = new Schema({
   }
 });
 
-// const encrypt = (value: String) => {
-//   return bcrypt.hash(value, 12);
-// }
+userSchema.pre('save', (next) => {
+  console.log('pasword hashingl');
+  next();
+});
 
 const User = model('User', userSchema);
 export default User;

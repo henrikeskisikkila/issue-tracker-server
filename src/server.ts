@@ -3,7 +3,7 @@ import app from './app';
 
 const keys = require('./config/keys');
 mongoose.Promise = global.Promise;
-mongoose.connect(keys.mongoURI);
+const clienConnect = mongoose.connect(keys.mongoURI);
 
 app.set('port', process.env.PORT || 5000);
 
