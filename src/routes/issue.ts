@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction as Next } from 'express';
 import StatusCodes from 'http-status-codes';
-import { ObjectId } from 'mongodb';
 import Issue from '../models/issue';
 
 const router = express.Router();

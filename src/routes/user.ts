@@ -4,6 +4,10 @@ import User from '../models/user';
 
 const router = express.Router();
 
+// export const hello = (req: Request, res: Response): void => {
+//   res.send('hello');
+// }
+
 router.get('/:email', async (req: Request, res: Response, next: Next) => {
   const user = await User.findOne(
     { email: req.params.email },

@@ -1,4 +1,10 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
+
+type UserDocument = mongoose.Document & {
+  username: string,
+  email: string,
+  password: string
+}
 
 const emailValidator = {
   validator: (email) => {
@@ -34,3 +40,4 @@ const userSchema = new Schema({
 
 const User = model('User', userSchema);
 export default User;
+export { UserDocument };
