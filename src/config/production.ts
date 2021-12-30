@@ -1,3 +1,11 @@
-module.exports = {
-  mongoURI: process.env.MONGO_URI
+interface production {
+  mongoURI: String;
+  sessionSecret: String;
+}
+
+const production = {
+  mongoURI: '',
+  sessionSecret: ''
 };
+
+export default production;

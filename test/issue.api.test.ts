@@ -3,9 +3,9 @@ import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import app from '../src/app';
 import Issue from '../src/models/issue';
+import properties from '../src/config/properties';
 
-const keys = require('../src/config/keys');
-mongoose.connect(keys.mongoURI);
+mongoose.connect(properties.mongoURI);
 
 describe('Testing REST API endpoints (Issue)', () => {
 
@@ -19,10 +19,11 @@ describe('Testing REST API endpoints (Issue)', () => {
 
   test('get all issues', async () => {
     await request(app)
-      .get('/issue')
+      .get('/issues')
       .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(StatusCodes.OK);
+      .expect(StatusCodes.OK)
+      .expect('Content-Type', /json/);
+
   });
 
   test('get an issue by using its identifier', async () => {

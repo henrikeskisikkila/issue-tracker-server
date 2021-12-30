@@ -3,33 +3,40 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import bodyParser from 'body-parser';
 import passport from 'passport';
-import issue from './routes/issue';
-import user from './routes/user';
-import * as authentication from './routes/authentication';
-import { isAuthenticated } from './services/passport';
-const keys = require('./config/keys');
+import * as auth from './controllers/auth';
+import * as issue from './controllers/issue';
+import { isAuth } from './services/passport';
+import properties from './config/properties';
+import error from './controllers/error';
 
 const app = express();
 
 app.use(session({
-  secret: 'SECRET',
+  resave: true,
+  saveUninitialized: true,
+  secret: properties.sessionSecret,
   store: MongoStore.create({
-    mongoUrl: keys.mongoURI
+    mongoUrl: properties.mongoURI
   })
 }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/ping', (req, res) => { res.send('pong') });
 
-app.get('/login', authentication.login);
-app.post('/authenticate', authentication.authenticate);
-app.post('/signup', authentication.signUp);
+app.post('/authenticate', auth.authenticate);
+app.post('/signup', auth.signUp);
 
-app.get('/welcome', (req, res) => { res.send('welcome') });
-app.use('/issue', isAuthenticated, issue);
-app.use('/user', user);
+app.get('/issues', isAuth, issue.issues);
+app.get('/issue/:id', isAuth, issue.issue);
+app.post('/issue', isAuth, issue.save);
+app.put('/issue/:id', isAuth, issue.update);
+app.delete('/issue/:id', isAuth, issue.remove);
+
+app.use(error);
 
 export default app;

@@ -1,40 +1,32 @@
-import express, { Request, Response, NextFunction as Next } from 'express';
+import { Request, Response, NextFunction as Next } from 'express';
 import StatusCodes from 'http-status-codes';
 import Issue from '../models/issue';
 
-const router = express.Router();
-
-router.get('/', async (req: Request, res: Response) => {
+export const issues = async (req: Request, res: Response, next: Next): Promise<void> => {
   const issues = await Issue.find({});
   res.send(issues);
-});
+};
 
-router.get('/:id', async (req: Request, res: Response) => {
+export const issue = async (req: Request, res: Response, next: Next): Promise<void> => {
   const issue: any = await Issue.findOne({ _id: req.params.id });
   res.send(issue);
-});
+};
 
-router.post('/', async (req: Request, res: Response) => {
+export const save = async (req: Request, res: Response, next: Next): Promise<void> => {
   const issue = new Issue(req.body);
   const result = await issue.save();
   res.send({ id: result._id.toString() });
-});
+};
 
-router.put('/:id', async (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response, next: Next): Promise<void> => {
   const issue = await Issue.findOne({ _id: req.params.id });
   issue.title = req.body.title;
   issue.content = req.body.content;
   const savedIssue = await issue.save();
   res.send(savedIssue);
-});
+};
 
-router.delete('/:id', async (req: any, res: Response) => {
+export const remove = async (req: Request, res: Response, next: Next): Promise<void> => {
   await Issue.deleteOne({ _id: req.params.id });
   res.sendStatus(StatusCodes.OK);
-});
-
-router.use((err: Error, req: Request, res: Response, next: Next) => {
-  res.sendStatus(StatusCodes.BAD_REQUEST);
-});
-
-export default router;
+}

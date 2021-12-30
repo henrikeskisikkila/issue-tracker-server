@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
 import app from './app';
+import properties from './config/properties';
 
-const keys = require('./config/keys');
 mongoose.Promise = global.Promise;
-const clienConnect = mongoose.connect(keys.mongoURI);
+mongoose.connect(properties.mongoURI);
 
 app.set('port', process.env.PORT || 5000);
-
 
 app.listen(app.get('port'), () => {
   console.log(`Server is listening at port ${app.get('port')}`);

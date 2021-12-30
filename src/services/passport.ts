@@ -1,23 +1,20 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import { Request, Response, NextFunction as Next } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import User, { UserDocument } from '../models/user';
 
 const LocalStrategy = passportLocal.Strategy;
 
 passport.serializeUser((user: UserDocument, done) => {
-  console.log(`serializeUser ${user}`);
   done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
-  console.log('deserializeUser');
   User.findById(id, (err: Error, user: UserDocument) => {
-    console.log(user)
     done(err, user);
   });
 });
-
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
   User.findOne({ email: email }, (err: Error, user: any) => {
@@ -36,6 +33,9 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
       return done(null, false, { message: 'Incorrect password.' });
     }
 
+    //TODO: Compare the user-supplied password with the hashed password stored in the database
+    //crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+
     // if (!user.validPassword(password)) {
     //   return done(null, false, { message: 'Incorrect password.' });
     // }
@@ -45,11 +45,12 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
 }
 ));
 
-const isAuthenticated = (req: Request, res: Response, next: Next) => {
+const isAuth = (req: Request, res: Response, next: Next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+
+  return res.sendStatus(StatusCodes.UNAUTHORIZED);
 }
 
-export { isAuthenticated };
+export { isAuth };
