@@ -35,7 +35,7 @@ const userSchema = new Schema({
 });
 
 userSchema.pre('save', (next) => {
-  console.log('pasword hashingl');
+  console.log('TODO: hash a password when a new user is created');
   next();
 });
 

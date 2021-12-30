@@ -3,31 +3,45 @@ import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import app from '../src/app';
 import Issue from '../src/models/issue';
+import User from '../src/models/user';
 import properties from '../src/config/properties';
 
 mongoose.connect(properties.mongoURI);
 
 describe('Testing REST API endpoints (Issue)', () => {
+  let agent: request.SuperAgentTest;
+  let user = { username: 'name', email: 'name@test.com', password: 'testing' };
 
   beforeAll(async () => {
-    await Issue.deleteMany({});
+    // Create a new test user
+    agent = request.agent(app);
+
+    await agent
+      .post('/signup')
+      .send(user);
+
+    // Authenticate the test user
+    await agent
+      .post('/authenticate')
+      .send({ email: user.email, password: user.password });
   });
 
   afterAll(async () => {
+    await Issue.deleteMany({});
+    await User.deleteMany({});
     await mongoose.connection.close();
   });
 
   test('get all issues', async () => {
-    await request(app)
+    const response = await agent
       .get('/issues')
       .set('Accept', 'application/json')
-      .expect(StatusCodes.OK)
-      .expect('Content-Type', /json/);
 
+    expect(response.statusCode).toBe(StatusCodes.OK);
   });
 
   test('get an issue by using its identifier', async () => {
-    const postResponse = await request(app)
+    const postResponse = await agent
       .post('/issue')
       .send({ 'title': 'Title', 'content': 'Content' })
       .set('Accept', 'application/json')
@@ -35,7 +49,7 @@ describe('Testing REST API endpoints (Issue)', () => {
     expect(postResponse.statusCode).toBe(StatusCodes.OK);
     expect(postResponse.body.id).toBeDefined();
 
-    const getResponse = await request(app)
+    const getResponse = await agent
       .get('/issue/' + postResponse.body.id)
       .set('Accept', 'application/json');
 
@@ -44,7 +58,7 @@ describe('Testing REST API endpoints (Issue)', () => {
   });
 
   test('post an new issue', async () => {
-    const response = await request(app)
+    const response = await agent
       .post('/issue')
       .send({ 'title': 'My Title', 'content': 'My Content' })
       .set('Accept', 'application/json');
@@ -54,7 +68,7 @@ describe('Testing REST API endpoints (Issue)', () => {
   });
 
   test('post an new issue with invalid data', async () => {
-    const response = await request(app)
+    const response = await agent
       .post('/issue')
       .send({})
       .set('Accept', 'application/json');
@@ -63,7 +77,7 @@ describe('Testing REST API endpoints (Issue)', () => {
   });
 
   test('update an issue', async () => {
-    const response = await request(app)
+    const response = await agent
       .post('/issue')
       .send({ 'title': 'My Title', 'content': 'My Content' })
       .set('Accept', 'application/json');
@@ -74,7 +88,7 @@ describe('Testing REST API endpoints (Issue)', () => {
     const newTitle = 'Updated Title';
     const newContent = 'Updated Content';
 
-    const updateResponse = await request(app)
+    const updateResponse = await agent
       .put('/issue/' + response.body.id)
       .send({ 'title': newTitle, 'content': newContent })
 
@@ -85,7 +99,7 @@ describe('Testing REST API endpoints (Issue)', () => {
   });
 
   test('delete an issue by using its identifier', async () => {
-    const postResponse = await request(app)
+    const postResponse = await agent
       .post('/issue')
       .send({ 'title': 'My Title', 'content': 'My Content' })
       .set('Accept', 'application/json');
@@ -93,14 +107,14 @@ describe('Testing REST API endpoints (Issue)', () => {
     expect(postResponse.statusCode).toBe(StatusCodes.OK);
     expect(postResponse.body.id).toBeDefined();
 
-    const deleteResponse = await request(app)
+    const deleteResponse = await agent
       .delete('/issue/' + postResponse.body.id)
 
     expect(deleteResponse.statusCode).toBe(StatusCodes.OK);
   });
 
   test('trying to delete an issue without identifier', async () => {
-    const response = await request(app)
+    const response = await agent
       .delete('/issue/')
 
     expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);

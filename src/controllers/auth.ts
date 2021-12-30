@@ -14,8 +14,12 @@ export const authenticate = async (req: Request, res: Response, next: Next) => {
     return res.sendStatus(StatusCodes.UNAUTHORIZED);
   }
 
-  //TODO: Refactor, mayby this could be transfered to services
-  passport.authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
+  await passportAuthenticate(req, res, next);
+}
+
+//TODO: Check this!!!
+const passportAuthenticate = async (req: Request, res: Response, next: Next) => {
+  await passport.authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
     if (err) {
       console.log(err);
       return next(err);
@@ -35,7 +39,7 @@ export const authenticate = async (req: Request, res: Response, next: Next) => {
       res.sendStatus(StatusCodes.OK);
     });
   })(req, res, next);
-}
+};
 
 export const signUp = async (req: Request, res: Response, next: Next): Promise<void> => {
   const user = new User(req.body);
