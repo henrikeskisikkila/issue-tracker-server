@@ -1,11 +1,8 @@
-interface production {
-  mongoURI: String;
-  sessionSecret: String;
-}
+import Key from './key';
 
-const production = {
+const production: Key = {
   mongoURI: '',
-  sessionSecret: ''
+  sessionSecret: '',
 };
 
 export default production;

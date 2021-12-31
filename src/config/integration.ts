@@ -1,9 +1,6 @@
-interface integration {
-  mongoURI: String;
-  sessionSecret: String;
-}
+import Key from './key';
 
-const integration = {
+const integration: Key = {
   mongoURI: '',
   sessionSecret: ''
 };
