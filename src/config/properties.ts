@@ -2,11 +2,12 @@ import development from './development';
 import production from './production';
 import integration from './integration';
 
+const env = process.env.NODE_ENV;
 let properties = development;
 
-if (process.env.NODE_ENV === 'production') {
+if (env === 'production') {
   properties = production;
-} else if (process.env.NODE_ENV === 'integration') {
+} else if (env === 'integration') {
   properties = integration;
 }
 
