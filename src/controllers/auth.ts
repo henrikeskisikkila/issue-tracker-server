@@ -36,7 +36,8 @@ const passportAuthenticate = async (req: Request, res: Response, next: Next) => 
         return next(err);
       }
 
-      res.sendStatus(StatusCodes.OK);
+      console.log(req.user['_id'].toString());
+      res.send({ id: req.user['_id'].toString() });
     });
   })(req, res, next);
 };

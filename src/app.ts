@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import passport from 'passport';
 import * as auth from './controllers/auth';
 import * as issue from './controllers/issue';
+import * as project from './controllers/project';
 import { isAuth } from './services/passport';
 import properties from './config/properties';
 import error from './controllers/error';
@@ -36,6 +37,8 @@ app.get('/issue/:id', isAuth, issue.issue);
 app.post('/issue', isAuth, issue.save);
 app.put('/issue/:id', isAuth, issue.update);
 app.delete('/issue/:id', isAuth, issue.remove);
+
+app.post('/project', isAuth, project.create);
 
 app.use(error);
 

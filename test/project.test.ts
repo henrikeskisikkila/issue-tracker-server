@@ -10,7 +10,7 @@ mongoose.connect(properties.mongoURI);
 
 describe('Testing REST API endpoints (Project)', () => {
   let agent: request.SuperAgentTest;
-  let user = { username: 'name', email: 'name@test.com', password: 'testing' };
+  let user = { id: '', username: 'name', email: 'name@test.com', password: 'testing' };
 
   beforeAll(async () => {
     // Create a new test user
@@ -21,9 +21,11 @@ describe('Testing REST API endpoints (Project)', () => {
       .send(user);
 
     // Authenticate the test user
-    await agent
+    const response = await agent
       .post('/authenticate')
       .send({ email: user.email, password: user.password });
+
+    user.id = response.body.id;
   });
 
   afterAll(async () => {
@@ -35,11 +37,12 @@ describe('Testing REST API endpoints (Project)', () => {
   test('create a new project owned by a current test user', async () => {
     const response = await agent
       .post('/project')
-      .send({ 'title': 'My Project', 'userId': user.email })
+      .send({ 'name': 'My Project', 'userId': user.id })
       .set('Accept', 'application/json');
 
     expect(response.statusCode).toBe(StatusCodes.OK);
-    // expect(response.body.id).toBeDefined();
+    console.log(response.body);
+    expect(response.body).toBeDefined();
   });
 
   // test('get all project for the test user', async () => {
