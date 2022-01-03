@@ -4,40 +4,67 @@ import mongoose from 'mongoose';
 import app from '../src/app';
 import Issue from '../src/models/issue';
 import User from '../src/models/user';
+import Project from '../src/models/project';
 import properties from '../src/config/properties';
 
 mongoose.connect(properties.mongoURI);
 
 describe('Testing REST API endpoints (Issue)', () => {
   let agent: request.SuperAgentTest;
-  let user = { username: 'name', email: 'name@test.com', password: 'testing' };
+  let user = { id: '', username: 'name', email: 'john@test.com', password: 'testing' };
 
   beforeAll(async () => {
-    // Create a new test user
     agent = request.agent(app);
 
+    // Create a new test user
     await agent
       .post('/signup')
       .send(user);
 
     // Authenticate the test user
-    await agent
+    const response = await agent
       .post('/authenticate')
       .send({ email: user.email, password: user.password });
+
+    user.id = response.body.id;
   });
 
   afterAll(async () => {
     await Issue.deleteMany({});
     await User.deleteMany({});
+    await Project.deleteMany({});
     await mongoose.connection.close();
   });
 
-  test('get all issues', async () => {
+  test('get all issues for a project', async () => {
+    //create a project
+    const projectResponse = await agent
+      .post('/project')
+      .send({ 'name': 'My Project', 'createdBy': user.id })
+      .set('Accept', 'application/json');
+
+    expect(projectResponse.statusCode).toBe(StatusCodes.OK);
+    expect(projectResponse.body).toBeDefined();
+    expect(projectResponse.body.createdBy.toString()).toBe(user.id);
+    console.log(projectResponse.body);
+    const projectId = projectResponse.body._id;
+    console.log('projectId' + projectId);
+
+    //create an issue for the project
+    const issueResponse = await agent
+      .post('/issue')
+      .send({ 'title': 'My Title', 'content': 'My Content', createdBy: user.id, projectId: projectId })
+      .set('Accept', 'application/json');
+
+    expect(issueResponse.statusCode).toBe(StatusCodes.OK);
+    expect(issueResponse.body.id).toBeDefined();
+
     const response = await agent
-      .get('/issues')
+      .get('/issues?projectId=' + projectId)
       .set('Accept', 'application/json')
 
     expect(response.statusCode).toBe(StatusCodes.OK);
+    console.log(response.body);
   });
 
   test('get an issue by using its identifier', async () => {

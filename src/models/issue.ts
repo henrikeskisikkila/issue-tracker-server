@@ -13,9 +13,15 @@ const issueSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  _user: {
+  createdBy: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
+  },
+  projectId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Project',
+    required: true
   },
 });
 

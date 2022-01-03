@@ -32,10 +32,10 @@ app.get('/ping', (req, res) => { res.send('pong') });
 app.post('/authenticate', auth.authenticate);
 app.post('/signup', auth.signUp);
 
-app.get('/issues', isAuth, issue.issues);
-app.get('/issue/:id', isAuth, issue.issue);
 app.post('/issue', isAuth, issue.save);
+app.get('/issue/:id', isAuth, issue.issue);
 app.put('/issue/:id', isAuth, issue.update);
+app.get('/issues', isAuth, issue.issues);
 app.delete('/issue/:id', isAuth, issue.remove);
 
 app.post('/project', isAuth, project.create);
