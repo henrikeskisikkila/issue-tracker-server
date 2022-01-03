@@ -39,6 +39,8 @@ app.put('/issue/:id', isAuth, issue.update);
 app.delete('/issue/:id', isAuth, issue.remove);
 
 app.post('/project', isAuth, project.create);
+app.put('/project/:id', isAuth, project.update);
+app.get('/projects', isAuth, project.projects);
 
 app.use(error);
 

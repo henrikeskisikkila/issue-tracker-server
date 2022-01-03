@@ -13,7 +13,7 @@ const projectSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  _user: {
+  createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   },

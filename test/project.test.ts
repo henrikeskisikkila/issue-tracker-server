@@ -37,12 +37,59 @@ describe('Testing REST API endpoints (Project)', () => {
   test('create a new project owned by a current test user', async () => {
     const response = await agent
       .post('/project')
-      .send({ 'name': 'My Project', 'userId': user.id })
+      .send({ 'name': 'My Project', 'createdBy': user.id })
       .set('Accept', 'application/json');
 
     expect(response.statusCode).toBe(StatusCodes.OK);
-    console.log(response.body);
     expect(response.body).toBeDefined();
+    expect(response.body.createdBy.toString()).toBe(user.id);
+    console.log(response.body);
+  });
+
+  test('update a project', async () => {
+    const postResponse = await agent
+      .post('/project')
+      .send({ 'name': 'My Project', 'createdBy': user.id })
+      .set('Accept', 'application/json');
+
+    expect(postResponse.body.createdBy.toString()).toBe(user.id);
+
+    console.log(postResponse.body._id.toString())
+
+    const newName = 'Updated Name';
+    const newDescription = 'Updated Description';
+
+    const response = await agent
+      .put('/project/' + postResponse.body._id.toString())
+      .send({ 'name': newName, 'description': newDescription })
+
+    console.log(response.body);
+
+    expect(response.statusCode).toBe(StatusCodes.OK);
+    expect(response.body._id).toBe(postResponse.body._id.toString());
+    expect(response.body.name).toBe(newName);
+    expect(response.body.description).toBe(newDescription);
+  });
+
+  test('get all projects for a user', async () => {
+    const postResponse = await agent
+      .post('/project')
+      .send({ 'name': 'My Project', 'createdBy': user.id })
+      .set('Accept', 'application/json');
+
+    const response = await agent
+      .get('/projects?userId=' + user.id)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toBe(StatusCodes.OK);
+    expect(response.body.length).toBeGreaterThan(0);
+  });
+
+  test('get all issues for a project', async () => {
+    //create project
+    //create an issue for that project
+    //get all issues for that project
+
   });
 
   // test('get all project for the test user', async () => {
@@ -81,27 +128,7 @@ describe('Testing REST API endpoints (Project)', () => {
   //   expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
   // });
 
-  // test('update an issue', async () => {
-  //   const response = await agent
-  //     .post('/issue')
-  //     .send({ 'title': 'My Title', 'content': 'My Content' })
-  //     .set('Accept', 'application/json');
 
-  //   expect(response.statusCode).toBe(StatusCodes.OK);
-  //   expect(response.body.id).toBeDefined();
-
-  //   const newTitle = 'Updated Title';
-  //   const newContent = 'Updated Content';
-
-  //   const updateResponse = await agent
-  //     .put('/issue/' + response.body.id)
-  //     .send({ 'title': newTitle, 'content': newContent })
-
-  //   expect(updateResponse.statusCode).toBe(StatusCodes.OK);
-  //   expect(updateResponse.body._id).toBe(response.body.id);
-  //   expect(updateResponse.body.title).toBe(newTitle);
-  //   expect(updateResponse.body.content).toBe(newContent);
-  // });
 
   // test('delete an issue by using its identifier', async () => {
   //   const postResponse = await agent
