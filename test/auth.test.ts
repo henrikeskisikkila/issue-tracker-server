@@ -8,19 +8,14 @@ import properties from '../src/config/properties';
 mongoose.connect(properties.mongoURI);
 
 describe('Testing REST API endpoints (Auth)', () => {
-  const user = {
-    username: 'John Doe',
-    email: 'john.doe@test.com',
-    password: 'testing'
-  };
+  const user = { username: 'Auth', email: 'auth@test.com', password: 'testing' };
 
   afterAll(async () => {
     await mongoose.connection.close();
   });
 
-  beforeEach(async () => {
-    const response = await User.remove({ email: user.email });
-    console.log(response);
+  afterEach(async () => {
+    await User.remove({ email: user.email });
   });
 
   test('signup a new user', async () => {
