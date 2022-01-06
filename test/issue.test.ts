@@ -11,9 +11,7 @@ mongoose.connect(properties.mongoURI);
 describe('Testing REST API endpoints (Issue)', () => {
   let agent: request.SuperAgentTest;
   agent = request.agent(app);
-  let user;
-  let projectId;
-  let issue;
+  let user, projectId, issue;
 
   beforeAll(async () => {
     user = {

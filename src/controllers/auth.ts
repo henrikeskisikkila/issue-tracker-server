@@ -17,22 +17,18 @@ export const authenticate = async (req: Request, res: Response, next: Next) => {
   await passportAuthenticate(req, res, next);
 }
 
-//TODO: Check this!!!
 const passportAuthenticate = async (req: Request, res: Response, next: Next) => {
   await passport.authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
     if (err) {
-      console.log(err);
       return next(err);
     }
 
     if (!user) {
-      console.log('user not found');
       return res.sendStatus(StatusCodes.UNAUTHORIZED);
     }
 
     req.logIn(user, (err) => {
       if (err) {
-        console.log(err);
         return next(err);
       }
 
@@ -41,7 +37,7 @@ const passportAuthenticate = async (req: Request, res: Response, next: Next) => 
   })(req, res, next);
 };
 
-export const signUp = async (req: Request, res: Response, next: Next): Promise<void> => {
+export const signUp = async (req: Request, res: Response) => {
   const user = new User(req.body);
   const result = await user.save();
   res.send({ email: result.email.toString() });

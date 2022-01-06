@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/ping', (req, res) => { res.send('pong') });
+app.get('/ping', (req, res) => res.send('pong'));
 
 app.post('/authenticate', auth.authenticate);
 app.post('/signup', auth.signUp);
