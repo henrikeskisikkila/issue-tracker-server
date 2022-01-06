@@ -1,14 +1,17 @@
 FROM public.ecr.aws/bitnami/node:17
 
-WORKDIR /user/src/app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
 RUN npm install
 #RUN npm ci --only=production
-RUN npm run build
+
+COPY tsconfig.json ./
 
 COPY . .
+
+RUN npm run build
 
 EXPOSE 8080
 
