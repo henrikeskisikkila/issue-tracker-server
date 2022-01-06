@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "npm run build && node dist/server.js",
-    "start:dev": "nodemon",
+    "start:dev": "ts-node-dev --respawn src/server.ts",
     "build": "rm -rf ./dist && tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest --coverage",
@@ -38,11 +38,11 @@
     "dotenv": "^10.0.0",
     "eslint": "^8.5.0",
     "jest": "^27.4.5",
-    "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
     "supertest": "^6.1.6",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
+    "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.4"
   },
   "dependencies": {
