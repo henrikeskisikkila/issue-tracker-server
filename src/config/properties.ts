@@ -1,14 +1,14 @@
-import development from './development';
-import production from './production';
-import integration from './integration';
+import dotenv from 'dotenv';
 
-const env = process.env.NODE_ENV;
-let properties = development;
+const result = dotenv.config();
 
-if (env === 'production') {
-  properties = production;
-} else if (env === 'integration') {
-  properties = integration;
+if (result.error) {
+  throw result.error;
 }
+
+const properties = {
+  mongoURI: process.env.MONGODB_URI,
+  sessionSecret: process.env.SESSION_SECRET
+};
 
 export default properties;
