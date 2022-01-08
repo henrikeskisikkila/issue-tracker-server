@@ -3,7 +3,7 @@ import { check, validationResult } from 'express-validator';
 import passport from 'passport';
 import { IVerifyOptions } from 'passport-local';
 import StatusCodes from 'http-status-codes';
-import User, { UserDocument } from '../models/user';
+import { UserDocument, User } from '../models/user';
 
 export const authenticate = async (req: Request, res: Response, next: Next) => {
   await check('email', 'Email is not valid').isEmail().run(req);

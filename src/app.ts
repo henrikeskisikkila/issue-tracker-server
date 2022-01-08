@@ -33,14 +33,14 @@ app.post('/authenticate', auth.authenticate);
 app.post('/signup', auth.signUp);
 
 app.post('/issue', isAuth, issue.save);
-app.get('/issue/:id', isAuth, issue.issue);
+app.get('/issue/:id', isAuth, issue.getIssue);
 app.put('/issue/:id', isAuth, issue.update);
-app.get('/issues', isAuth, issue.issues);
+app.get('/issues', isAuth, issue.getIssues);
 app.delete('/issue/:id', isAuth, issue.remove);
 
 app.post('/project', isAuth, project.create);
 app.put('/project/:id', isAuth, project.update);
-app.get('/projects', isAuth, project.projects);
+app.get('/projects', isAuth, project.getProjects);
 
 app.use(error);
 

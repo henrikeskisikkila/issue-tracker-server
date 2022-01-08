@@ -2,7 +2,7 @@ import request from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import app from '../src/app';
-import User from '../src/models/user';
+import { User } from '../src/models/user';
 import properties from '../src/config/properties';
 
 mongoose.connect(properties.mongoURI);
@@ -15,7 +15,7 @@ describe('Testing REST API endpoints (Auth)', () => {
   });
 
   afterEach(async () => {
-    await User.remove({ email: user.email });
+    await User.deleteOne({ email: user.email });
   });
 
   test('signup a new user', async () => {

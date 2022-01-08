@@ -16,7 +16,7 @@ export const update = async (req: Request, res: Response) => {
   res.send(updatedProject);
 }
 
-export const projects = async (req: Request, res: Response) => {
+export const getProjects = async (req: Request, res: Response) => {
   const userId = req.query.userId;
 
   if (!userId) {

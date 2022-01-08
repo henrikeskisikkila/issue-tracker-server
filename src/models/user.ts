@@ -1,10 +1,14 @@
 import mongoose, { Schema, model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 type UserDocument = mongoose.Document & {
-  username: string,
-  email: string,
-  password: string
+  username: string;
+  email: string;
+  password: string;
+  comparePassword: comparePasswordFunction;
 }
+
+type comparePasswordFunction = (password: string, complete: (err: Error, result: boolean) => void) => void;
 
 const emailValidator = {
   validator: (email) => {
@@ -15,7 +19,7 @@ const emailValidator = {
   }
 }
 
-const userSchema = new Schema({
+const userSchema = new Schema<UserDocument>({
   username: {
     type: String,
     required: true,
@@ -34,11 +38,30 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.pre('save', (next) => {
-  console.log('TODO: hash a password when a new user is created');
-  next();
+userSchema.pre('save', function save(next) {
+  const user = this as UserDocument;
+  bcrypt.genSalt((err: Error, salt: string) => {
+    if (err) {
+      return next(err)
+    }
+
+    bcrypt.hash(user.password, salt, (err: Error, hash) => {
+      if (err) {
+        return next(err)
+      }
+      user.password = hash;
+      next();
+    });
+  });
 });
 
+const comparePassword = function (password: string, complete: Function) {
+  bcrypt.compare(password, this.password, (err: Error, result: boolean) => {
+    complete(err, result);
+  });
+}
+
+userSchema.methods.comparePassword = comparePassword;
+
 const User = model('User', userSchema);
-export default User;
-export { UserDocument };
+export { UserDocument, User };

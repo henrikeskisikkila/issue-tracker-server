@@ -2,7 +2,15 @@ import { Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import Issue from '../models/issue';
 
-export const issues = async (req: Request, res: Response) => {
+/**
+ * Get all issues that includes the project which is defined by projectId
+ * 
+ * @param req represents the HTTP request and has properties for the request
+ *             query string, parameters, body, HTTP headers.
+ * @param res represents the HTTP response that an Express app sends when
+ *            it gets an HTTP request.
+ */
+export const getIssues = async (req: Request, res: Response) => {
   const projectId = req.query.projectId;
 
   if (!projectId) {
@@ -18,7 +26,10 @@ export const issues = async (req: Request, res: Response) => {
   res.send(issues);
 };
 
-export const issue = async (req: Request, res: Response) => {
+/**
+ * Get one issue based on issue and issue creator ids
+ */
+export const getIssue = async (req: Request, res: Response) => {
   const issue: any = await Issue.findOne({
     _id: req.params.id,
     createdBy: req.user['_id'].toString()
@@ -27,6 +38,11 @@ export const issue = async (req: Request, res: Response) => {
   res.send(issue);
 };
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ */
 export const save = async (req: Request, res: Response) => {
   const issue = new Issue(req.body);
   const result = await issue.save();
@@ -34,6 +50,11 @@ export const save = async (req: Request, res: Response) => {
   res.send({ id: result._id.toString() });
 };
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ */
 export const update = async (req: Request, res: Response) => {
   const issue = await Issue.findOne({
     _id: req.params.id,
@@ -52,6 +73,11 @@ export const update = async (req: Request, res: Response) => {
   res.send(savedIssue);
 };
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ */
 export const remove = async (req: Request, res: Response) => {
   await Issue.deleteOne({ _id: req.params.id, createdBy: req.user['_id'].toString() });
 
