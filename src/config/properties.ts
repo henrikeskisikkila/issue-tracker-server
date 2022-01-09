@@ -6,9 +6,9 @@ if (result.error) {
   throw result.error;
 }
 
-const properties = {
-  mongoURI: process.env.MONGODB_URI,
-  sessionSecret: process.env.SESSION_SECRET
+const properties: Properties = {
+  mongoURI: process.env.MONGODB_URI as string,
+  sessionSecret: process.env.SESSION_SECRET as string
 };
 
 export default properties;

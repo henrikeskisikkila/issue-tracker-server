@@ -10,8 +10,14 @@ import { isAuth } from './services/passport';
 import properties from './config/properties';
 import error from './controllers/error';
 
+/**
+ * 
+ */
 const app = express();
 
+/**
+ * 
+ */
 app.use(session({
   resave: true,
   saveUninitialized: true,
@@ -21,27 +27,48 @@ app.use(session({
   })
 }));
 
+/**
+ * 
+ */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+/**
+ * 
+ */
 app.use(passport.initialize());
 app.use(passport.session());
 
+/**
+ * 
+ */
 app.get('/ping', (req, res) => res.send('pong'));
 
+/**
+ * 
+ */
 app.post('/authenticate', auth.authenticate);
 app.post('/signup', auth.signUp);
 
+/**
+ * 
+ */
 app.post('/issue', isAuth, issue.save);
 app.get('/issue/:id', isAuth, issue.getIssue);
 app.put('/issue/:id', isAuth, issue.update);
 app.get('/issues', isAuth, issue.getIssues);
 app.delete('/issue/:id', isAuth, issue.remove);
 
+/**
+ * 
+ */
 app.post('/project', isAuth, project.create);
 app.put('/project/:id', isAuth, project.update);
 app.get('/projects', isAuth, project.getProjects);
 
+/**
+ * 
+ */
 app.use(error);
 
 export default app;

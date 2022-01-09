@@ -6,16 +6,25 @@ import { User, UserDocument } from '../models/user';
 
 const LocalStrategy = passportLocal.Strategy;
 
+/**
+ * 
+ */
 passport.serializeUser((user: UserDocument, done) => {
   done(null, user.id);
 });
 
+/**
+ * 
+ */
 passport.deserializeUser((id, done) => {
   User.findById(id, (err: Error, user: UserDocument) => {
     done(err, user);
   });
 });
 
+/**
+ * Sign in by using email and password
+ */
 passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
   User.findOne({ email: email }, (err: Error, user: UserDocument) => {
     if (err) {
@@ -41,12 +50,14 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
 }
 ));
 
+/**
+ * Check if a request is authenticated. This is used as a middleware handler.
+ */
 const isAuth = (req: Request, res: Response, next: Next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-
-  return res.sendStatus(StatusCodes.UNAUTHORIZED);
+  res.sendStatus(StatusCodes.UNAUTHORIZED);
 }
 
 export { isAuth };

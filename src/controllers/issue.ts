@@ -4,11 +4,7 @@ import Issue from '../models/issue';
 
 /**
  * Get all issues that includes the project which is defined by projectId
- * 
- * @param req represents the HTTP request and has properties for the request
- *             query string, parameters, body, HTTP headers.
- * @param res represents the HTTP response that an Express app sends when
- *            it gets an HTTP request.
+ * @route GET /issues
  */
 export const getIssues = async (req: Request, res: Response) => {
   const projectId = req.query.projectId;
@@ -18,6 +14,10 @@ export const getIssues = async (req: Request, res: Response) => {
     return
   }
 
+  /**
+   * Get an issue that includes the project which is defined by projectId
+   * @route GET /issue
+   */
   const issues = await Issue.find({
     projectId: projectId,
     createdBy: req.user['_id'].toString()
@@ -28,6 +28,7 @@ export const getIssues = async (req: Request, res: Response) => {
 
 /**
  * Get one issue based on issue and issue creator ids
+ * @route GET /issue/:id
  */
 export const getIssue = async (req: Request, res: Response) => {
   const issue: any = await Issue.findOne({
@@ -39,9 +40,8 @@ export const getIssue = async (req: Request, res: Response) => {
 };
 
 /**
- * 
- * @param req 
- * @param res 
+ * Save an issue to the database
+ * @route POST /issue
  */
 export const save = async (req: Request, res: Response) => {
   const issue = new Issue(req.body);
@@ -51,9 +51,8 @@ export const save = async (req: Request, res: Response) => {
 };
 
 /**
- * 
- * @param req 
- * @param res 
+ * Update an issue
+ * @route PUT /issue/:id
  */
 export const update = async (req: Request, res: Response) => {
   const issue = await Issue.findOne({
@@ -74,9 +73,8 @@ export const update = async (req: Request, res: Response) => {
 };
 
 /**
- * 
- * @param req 
- * @param res 
+ * Remove an issue
+ * @route DELETE /issue/:id
  */
 export const remove = async (req: Request, res: Response) => {
   await Issue.deleteOne({ _id: req.params.id, createdBy: req.user['_id'].toString() });

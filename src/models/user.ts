@@ -8,16 +8,9 @@ type UserDocument = mongoose.Document & {
   comparePassword: comparePasswordFunction;
 }
 
-type comparePasswordFunction = (password: string, complete: (err: Error, result: boolean) => void) => void;
-
-const emailValidator = {
-  validator: (email) => {
-    return /\S+@\S+\.\S+/.test(email);
-  },
-  message: (email) => {
-    return `${email} is not a valid email address`
-  }
-}
+type comparePasswordFunction = (
+  password: string,
+  complete: (err: Error, result: boolean) => void) => void;
 
 const userSchema = new Schema<UserDocument>({
   username: {
@@ -29,7 +22,9 @@ const userSchema = new Schema<UserDocument>({
     type: String,
     required: true,
     unique: true,
-    validate: emailValidator
+    validate: (email: string) => {
+      return /\S+@\S+\.\S+/.test(email);
+    }
   },
   password: {
     type: String,
@@ -38,23 +33,20 @@ const userSchema = new Schema<UserDocument>({
   }
 });
 
+/**
+ * Hash a password when UserDocument is saved to the database.
+ */
 userSchema.pre('save', function save(next) {
   const user = this as UserDocument;
-  bcrypt.genSalt((err: Error, salt: string) => {
-    if (err) {
-      return next(err)
-    }
-
-    bcrypt.hash(user.password, salt, (err: Error, hash) => {
-      if (err) {
-        return next(err)
-      }
-      user.password = hash;
-      next();
-    });
-  });
+  const salt = bcrypt.genSaltSync();
+  const hash = bcrypt.hashSync(user.password, salt);
+  user.password = hash;
+  next();
 });
 
+/**
+ * Compare received and stored passwords.
+ */
 const comparePassword = function (password: string, complete: Function) {
   bcrypt.compare(password, this.password, (err: Error, result: boolean) => {
     complete(err, result);
