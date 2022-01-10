@@ -1,6 +1,8 @@
-interface Properties {
+
+/**
+ * Declaration for configuration properties
+ */
+declare interface Properties {
   mongoURI: string;
   sessionSecret: string;
 }
-
-declare module "properties"

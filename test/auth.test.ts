@@ -5,10 +5,14 @@ import app from '../src/app';
 import { User } from '../src/models/user';
 import properties from '../src/config/properties';
 
-mongoose.connect(properties.mongoURI);
-
 describe('Testing REST API endpoints (Auth)', () => {
-  const user = { username: 'Auth', email: 'auth@test.com', password: 'testing' };
+  mongoose.connect(properties.mongoURI);
+
+  const user = {
+    username: 'Auth',
+    email: 'auth@test.com',
+    password: 'testing'
+  };
 
   afterAll(async () => {
     await mongoose.connection.close();
