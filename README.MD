@@ -10,12 +10,12 @@ This server is built with following frameworks, libraries and deployment tools.
 
 * [Node.js](https://nodejs.org/en/)
 * [Express](https://expressjs.com/)
-* [Mongoose] (https://mongoosejs.com/)
-* [Bcrypt] (https://github.com/kelektiv/node.bcrypt.js#readme)
-* [Jest] (https://jestjs.io/)
-* [Passport] (https://www.passportjs.org/)
-* [Docker] (https://www.docker.com/)
-* [AWS Code Build] (https://aws.amazon.com/codebuild/)
+* [Mongoose](https://mongoosejs.com/)
+* [Bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
+* [Jest](https://jestjs.io/)
+* [Passport](https://www.passportjs.org/)
+* [Docker](https://www.docker.com/)
+* [AWS Code Build](https://aws.amazon.com/codebuild/)
 
 ## Getting Started
 
