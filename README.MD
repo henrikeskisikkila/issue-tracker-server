@@ -22,13 +22,12 @@ This is how you set up this project locally. Follow these simple steps.
 
 ### Prerequisites
 
-Download and install
-[Node.js] (https://nodejs.org/en/download/)
+Download and install [Node.js](https://nodejs.org/en/download/)
 
 Check that installation is complete.
 
 * Node.js
-  ```
+  ```sh
   node -v
   ```
 
