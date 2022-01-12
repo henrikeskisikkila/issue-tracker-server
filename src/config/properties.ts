@@ -1,5 +1,9 @@
 import dotenv from 'dotenv';
 
+/**
+ * Read configuration properties from an .env file
+ * to Node's process environment
+ */
 const result = dotenv.config();
 
 if (result.error) {
