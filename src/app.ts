@@ -8,7 +8,7 @@ import * as issue from './controllers/issue';
 import * as project from './controllers/project';
 import { isAuth } from './services/passport';
 import properties from './config/properties';
-import error from './controllers/error';
+import { error } from './controllers/error';
 
 const app = express();
 

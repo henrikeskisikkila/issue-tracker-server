@@ -25,27 +25,26 @@ export const authenticate =
 /**
  * Authenticate a user by using Passport authentication middleware
  */
-const passportAuthenticate =
-  async (req: Request, res: Response, next: Next) => {
-    await passport
-      .authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
+const passportAuthenticate = async (req: Request, res: Response, next: Next) => {
+  await passport
+    .authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        return res.sendStatus(StatusCodes.UNAUTHORIZED);
+      }
+
+      req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
 
-        if (!user) {
-          return res.sendStatus(StatusCodes.UNAUTHORIZED);
-        }
-
-        req.logIn(user, (err) => {
-          if (err) {
-            return next(err);
-          }
-
-          res.send({ id: req.user['_id'].toString() });
-        });
-      })(req, res, next);
-  };
+        res.send({ id: req.user['_id'].toString() });
+      });
+    })(req, res, next);
+};
 
 /**
  * Sign up a user
