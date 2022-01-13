@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Schema, model, NativeError } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 type UserDocument = mongoose.Document & {
@@ -6,7 +6,7 @@ type UserDocument = mongoose.Document & {
   email: string;
   password: string;
   comparePassword: comparePasswordFunction;
-}
+};
 
 type comparePasswordFunction = (
   password: string,
@@ -34,12 +34,17 @@ const userSchema = new Schema<UserDocument>({
 });
 
 /**
- * Hash a password when UserDocument is saved to the database.
+ * Hash a password when a user data is saved to the database.
  */
-userSchema.pre('save', function save(next) {
+userSchema.pre('save', async function save(next) {
   const user = this as UserDocument;
-  const salt = bcrypt.genSaltSync();
-  const hash = bcrypt.hashSync(user.password, salt);
+  const saltRounds: number = 10;
+  const hash = await bcrypt.hash(user.password, saltRounds);
+
+  if (saltRounds != bcrypt.getRounds(hash)) {
+    return next(new NativeError('Password hash failed'));
+  }
+
   user.password = hash;
   next();
 });
@@ -47,7 +52,7 @@ userSchema.pre('save', function save(next) {
 /**
  * Compare received and stored passwords.
  */
-const comparePassword = function (password: string, complete: Function) {
+const comparePassword: comparePasswordFunction = function (password: string, complete: Function) {
   bcrypt.compare(password, this.password, (err: Error, result: boolean) => {
     complete(err, result);
   });
