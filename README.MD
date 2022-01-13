@@ -37,7 +37,7 @@ Check that installation is complete.
   ```
 
 Download and install [MongoDB](https://www.mongodb.com/try/download/community)
-or configure [a cloud based MongoDB] (https://account.mongodb.com/account/login)
+or configure [a cloud based MongoDB](https://account.mongodb.com/account/login)
 
 ### Installation
 
