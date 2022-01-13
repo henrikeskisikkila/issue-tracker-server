@@ -1,11 +1,11 @@
 ## Issue Tracker Server
 
-Issue Tracker Server is a REST API service. It makes possible manage issue related
-information. Users can sign up, login, create, update and remove projects and issues.
+Issue Tracker Server is a REST API service. It makes possible to manage issue related
+information. Users can sign up, login, create, update, and remove projects and issues.
 
 ### Built With
 
-This server is built with following frameworks, libraries and deployment tools.
+This server is built with following frameworks, libraries, and deployment tools.
 
 * [Node.js](https://nodejs.org/en/)
 * [Express](https://expressjs.com/)
@@ -36,6 +36,9 @@ Check that installation is complete.
   npm -v
   ```
 
+Download and install [MongoDB](https://www.mongodb.com/try/download/community)
+or configure [a cloud based MongoDB] (https://account.mongodb.com/account/login)
+
 ### Installation
 
 1. Clone the repo.
@@ -56,6 +59,6 @@ Check that installation is complete.
    SESSION_SECRET=
    ```
 4. Start server
-  ```sh
-  npm run start
-  ```
+   ```sh
+   npm run start
+   ```
