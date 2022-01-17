@@ -38,7 +38,7 @@ const userSchema = new Schema<UserDocument>({
  */
 userSchema.pre('save', async function save(next) {
   const user = this as UserDocument;
-  const saltRounds: number = 10;
+  const saltRounds = 10;
   const hash = await bcrypt.hash(user.password, saltRounds);
 
   if (saltRounds != bcrypt.getRounds(hash)) {
@@ -52,7 +52,7 @@ userSchema.pre('save', async function save(next) {
 /**
  * Compare received and stored passwords.
  */
-const comparePassword: comparePasswordFunction = function (password: string, complete: Function) {
+const comparePassword: comparePasswordFunction = function (password: string, complete) {
   bcrypt.compare(password, this.password, (err: Error, result: boolean) => {
     complete(err, result);
   });

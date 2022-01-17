@@ -7,9 +7,9 @@ import properties from '../src/config/properties';
 
 describe('Testing REST API endpoints (Project)', () => {
   mongoose.connect(properties.mongoURI);
-  let agent = request.agent(app);
+  const agent = request.agent(app);
 
-  let user = {
+  const user = {
     id: '',
     username: 'name',
     email: 'project@test.com',

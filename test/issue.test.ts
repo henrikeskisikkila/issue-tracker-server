@@ -8,7 +8,7 @@ import properties from '../src/config/properties';
 
 describe('Testing REST API endpoints (Issue)', () => {
   mongoose.connect(properties.mongoURI);
-  let agent: request.SuperAgentTest = request.agent(app);
+  const agent: request.SuperAgentTest = request.agent(app);
   let user, projectId, issue;
 
   beforeAll(async () => {

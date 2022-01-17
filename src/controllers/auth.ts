@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction as Next } from 'express';
 import { check, validationResult } from 'express-validator';
 import passport from 'passport';
-import { IVerifyOptions } from 'passport-local';
 import StatusCodes from 'http-status-codes';
 import { UserDocument, User } from '../models/user';
 
@@ -27,7 +26,7 @@ export const authenticate =
  */
 const passportAuthenticate = async (req: Request, res: Response, next: Next) => {
   await passport
-    .authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
+    .authenticate('local', (err: Error, user: UserDocument) => {
       if (err) {
         return next(err);
       }

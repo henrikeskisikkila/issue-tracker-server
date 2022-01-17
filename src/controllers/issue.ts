@@ -27,7 +27,7 @@ export const getIssues = async (req: Request, res: Response) => {
  * @route GET /issue/:id
  */
 export const getIssue = async (req: Request, res: Response) => {
-  const issue: any = await Issue.findOne({
+  const issue = await Issue.findOne({
     _id: req.params.id,
     createdBy: req.user['_id'].toString()
   });
