@@ -1,6 +1,6 @@
 FROM public.ecr.aws/bitnami/node:17
 
-WORKDIR /user/src/app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
