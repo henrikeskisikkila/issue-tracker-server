@@ -1,7 +1,7 @@
 ## Issue Tracker Server
 
 Issue Tracker Server is a REST API service. It makes possible to manage issue related
-information. Users can sign up, login, create, update, and remove projects and issues.
+data. Basic operations are supported like create, read, update and delete issue or project.
 
 ### Built With
 
@@ -12,6 +12,7 @@ This server is built with following frameworks, libraries, and deployment tools.
 * [Passport](https://www.passportjs.org/)
 * [Bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
 * [Jest](https://jestjs.io/)
+* [SuperTest](https://github.com/visionmedia/supertest)
 * [Mongoose](https://mongoosejs.com/)
 * [Docker](https://www.docker.com/)
 * [AWS Code Build](https://aws.amazon.com/codebuild/)
