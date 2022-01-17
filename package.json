@@ -5,11 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "npm run build && node dist/server.js",
-<<<<<<< HEAD
-    "start:dev": "nodemon",
-=======
     "start:dev": "ts-node-dev --respawn src/server.ts",
->>>>>>> refs/remotes/origin/main
     "build": "rm -rf ./dist && tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest --coverage",
@@ -40,17 +36,13 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
-    "dotenv": "^10.0.0",
     "eslint": "^8.5.0",
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
     "supertest": "^6.1.6",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
-<<<<<<< HEAD
-=======
     "ts-node-dev": "^1.1.8",
->>>>>>> refs/remotes/origin/main
     "typescript": "^4.5.4"
   },
   "dependencies": {
@@ -64,6 +56,7 @@
     "mongoose": "^6.1.4",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "dotenv": "^10.0.0"
   }
 }
