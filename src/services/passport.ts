@@ -2,55 +2,65 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import { Request, Response, NextFunction as Next } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import User, { UserDocument } from '../models/user';
+import { NativeError } from 'mongoose';
+import { User, UserDocument } from '../models/user';
 
 const LocalStrategy = passportLocal.Strategy;
 
-passport.serializeUser((user: UserDocument, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err: Error, user: UserDocument) => {
-    done(err, user);
-  });
-});
-
+/**
+ * Sign in by using email and password.
+ */
 passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-  User.findOne({ email: email }, (err: Error, user: any) => {
+  User.findOne({ email: email }, (err: NativeError, user: UserDocument) => {
     if (err) {
-      console.log(err);
       return done(err);
     }
 
     if (!user) {
-      console.log('user')
-      return done(null, false, { message: 'Incorrect username.' });
+      return done(null, false);
     }
 
-    if (user.password != password) {
-      console.log('password')
-      return done(null, false, { message: 'Incorrect password.' });
-    }
+    user.comparePassword(password, (err: NativeError, result: boolean) => {
+      if (err) {
+        return done(err);
+      }
 
-    //TODO: Compare the user-supplied password with the hashed password stored in the database
-    //crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+      if (result == true) {
+        return done(undefined, user);
+      }
 
-    // if (!user.validPassword(password)) {
-    //   return done(null, false, { message: 'Incorrect password.' });
-    // }
-
-    return done(null, user);
+      return done(undefined, false);
+    });
   });
 }
 ));
 
+/**
+ * Check if a request is authenticated.
+ */
 const isAuth = (req: Request, res: Response, next: Next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-
-  return res.sendStatus(StatusCodes.UNAUTHORIZED);
+  res.sendStatus(StatusCodes.UNAUTHORIZED);
 }
+
+/**
+ * Serialize user instance.
+ * This is middleware funtionality of Passport.
+ */
+passport.serializeUser((user: UserDocument, done) => {
+  done(null, user.id);
+});
+
+/**
+ * Deserialize user instance.
+ * This is middleware funtionality of Passport.
+ */
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err: NativeError, user: UserDocument) => {
+    done(err, user);
+  });
+});
 
 export { isAuth };

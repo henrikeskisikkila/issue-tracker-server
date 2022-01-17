@@ -2,18 +2,14 @@ import request from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import app from '../src/app';
-import User from '../src/models/user';
+import { User } from '../src/models/user';
 import Project from '../src/models/project';
 import properties from '../src/config/properties';
 
-mongoose.connect(properties.mongoURI);
-
 describe('Testing REST API endpoints (Issue)', () => {
-  let agent: request.SuperAgentTest;
-  agent = request.agent(app);
-  let user;
-  let projectId;
-  let issue;
+  mongoose.connect(properties.mongoURI);
+  let agent: request.SuperAgentTest = request.agent(app);
+  let user, projectId, issue;
 
   beforeAll(async () => {
     user = {

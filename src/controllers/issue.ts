@@ -1,8 +1,12 @@
-import { Request, Response, NextFunction as Next } from 'express';
+import { Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import Issue from '../models/issue';
 
-export const issues = async (req: Request, res: Response, next: Next): Promise<void> => {
+/**
+ * Get all issues based on projectId
+ * @route GET /issues
+ */
+export const getIssues = async (req: Request, res: Response) => {
   const projectId = req.query.projectId;
 
   if (!projectId) {
@@ -14,24 +18,39 @@ export const issues = async (req: Request, res: Response, next: Next): Promise<v
     projectId: projectId,
     createdBy: req.user['_id'].toString()
   });
+
   res.send(issues);
 };
 
-export const issue = async (req: Request, res: Response, next: Next): Promise<void> => {
+/**
+ * Get one issue based on issue and createdBy id 
+ * @route GET /issue/:id
+ */
+export const getIssue = async (req: Request, res: Response) => {
   const issue: any = await Issue.findOne({
     _id: req.params.id,
     createdBy: req.user['_id'].toString()
   });
+
   res.send(issue);
 };
 
-export const save = async (req: Request, res: Response, next: Next): Promise<void> => {
+/**
+ * Save an issue to the database
+ * @route POST /issue
+ */
+export const save = async (req: Request, res: Response) => {
   const issue = new Issue(req.body);
   const result = await issue.save();
+
   res.send({ id: result._id.toString() });
 };
 
-export const update = async (req: Request, res: Response, next: Next): Promise<void> => {
+/**
+ * Update an issue
+ * @route PUT /issue/:id
+ */
+export const update = async (req: Request, res: Response) => {
   const issue = await Issue.findOne({
     _id: req.params.id,
     createdBy: req.user['_id'].toString()
@@ -45,10 +64,16 @@ export const update = async (req: Request, res: Response, next: Next): Promise<v
   issue.title = req.body.title;
   issue.content = req.body.content;
   const savedIssue = await issue.save();
+
   res.send(savedIssue);
 };
 
-export const remove = async (req: Request, res: Response, next: Next): Promise<void> => {
+/**
+ * Remove an issue
+ * @route DELETE /issue/:id
+ */
+export const remove = async (req: Request, res: Response) => {
   await Issue.deleteOne({ _id: req.params.id, createdBy: req.user['_id'].toString() });
+
   res.sendStatus(StatusCodes.OK);
 }
